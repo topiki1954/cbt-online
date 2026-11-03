@@ -4,21 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aplikasi CBT Mandiri</title>
-    <!-- Menggunakan Tailwind CSS untuk tampilan modern mirip UTBK -->
-    <script src="https://jsdelivr.net"></script>
+    <!-- Menggunakan CDN Tailwind CSS cadangan yang lebih stabil -->
+    <link href="https://cloudflare.com" rel="stylesheet">
     <style>
         body { font-family: sans-serif; }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
-
-    <!-- Form bayangan tersembunyi untuk menembus pengaman CORS browser -->
-    <form id="form-kirim-sheets" action="#" method="POST" target="iframe-hidden" class="hidden">
-        <input type="text" name="nama" id="input-kirim-nama">
-        <input type="text" name="kelas" id="input-kirim-kelas">
-        <input type="text" name="skor" id="input-kirim-skor">
-    </form>
-    <iframe name="iframe-hidden" id="iframe-hidden" class="hidden"></iframe>
 
     <!-- FORM BIODATA SISWA -->
     <div id="form-biodata" class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
@@ -34,7 +26,7 @@
         <button onclick="mulaiUjian()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-lg transition duration-200 cursor-pointer">Mulai Ujian</button>
     </div>
 
-    <!-- AREA SOAL UJIAN (Tersembunyi di awal) -->
+    <!-- AREA SOAL UJIAN -->
     <div id="area-ujian" class="hidden bg-white p-8 rounded-lg shadow-md w-full max-w-2xl">
         <div class="flex justify-between items-center border-b pb-4 mb-4">
             <span id="info-peserta" class="font-semibold text-gray-600">Peserta: -</span>
@@ -42,7 +34,7 @@
         </div>
 
         <div id="konten-soal">
-            <!-- Soal akan muncul di sini via JavaScript -->
+            <!-- Soal akan muncul di sini -->
         </div>
 
         <div class="flex justify-between mt-6">
@@ -54,16 +46,13 @@
     <!-- SCREEN BERHASIL SELESAI -->
     <div id="area-selesai" class="hidden bg-white p-8 rounded-lg shadow-md w-full max-w-md text-center">
         <h2 class="text-2xl font-bold text-green-600 mb-2">Ujian Selesai!</h2>
-        <p class="text-gray-600 mb-6">Jawaban Anda telah berhasil dikirim ke server.</p>
+        <p class="text-gray-600 mb-6">Jawaban Anda telah berhasil diproses.</p>
         <div class="text-4xl font-bold text-gray-800 mb-4" id="nilai-akhir">Skor: 0</div>
         <p class="text-sm text-gray-500">Anda sekarang dapat menutup halaman ini.</p>
     </div>
 
     <script>
-        // PASTE URL GOOGLE APPS SCRIPT ANDA DI SINI
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyWv9AQ7XNMFq4vextrKKwOTlLzoEI7rcWOKrTxrx2587moTL85C9gikyfxdtzkFefVhw/exec"; 
-
-        // Bank Soal Dummy (Anda bisa ubah sesuka hati)
+        // Bank Soal Dummy
         const bankSoal = [
             { id: 1, tanya: "Apa ibukota negara Indonesia?", opsi: ["Surabaya", "Jakarta", "Bandung", "Medan"], kunci: "Jakarta" },
             { id: 2, tanya: "Berapakah hasil dari 5 + 5 * 2?", opsi: ["20", "15", "25", "30"], kunci: "15" },
@@ -114,14 +103,15 @@
                 <div class="flex flex-col">${htmlOpsi}</div>
             `;
 
-            // Atur tombol Navigasi
             document.getElementById('btn-prev').disabled = indeksSekarang === 0;
+            
+            const btnNext = document.getElementById('btn-next');
             if (indeksSekarang === bankSoal.length - 1) {
-                document.getElementById('btn-next').innerText = "Selesai & Kirim";
-                document.getElementById('btn-next').classList.replace('bg-blue-600', 'bg-green-600');
+                btnNext.innerText = "Selesai & Kirim";
+                btnNext.className = "bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold cursor-pointer";
             } else {
-                document.getElementById('btn-next').innerText = "Selanjutnya";
-                document.getElementById('btn-next').classList.replace('bg-green-600', 'bg-blue-600');
+                btnNext.innerText = "Selanjutnya";
+                btnNext.className = "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold cursor-pointer";
             }
         }
 
@@ -164,9 +154,7 @@
             clearInterval(hitungMundur);
             document.getElementById('area-ujian').classList.add('hidden');
             document.getElementById('area-selesai').classList.remove('hidden');
-            document.getElementById('nilai-akhir').innerText = "Mengirim...";
 
-            // 1. Hitung Skor Akhir
             let jumlahBenar = 0;
             bankSoal.forEach(soal => {
                 if (jawabanSiswa[soal.id] === soal.kunci) {
@@ -174,22 +162,7 @@
                 }
             });
             let skorAkhir = Math.round((jumlahBenar / bankSoal.length) * 100);
-
-            // 2. Tembakkan langsung ke Form tersembunyi agar lolos CORS
-            const form = document.getElementById('form-kirim-sheets');
-            form.action = SCRIPT_URL;
-
-            document.getElementById('input-kirim-nama').value = namaPeserta;
-            document.getElementById('input-kirim-kelas').value = kelasPeserta;
-            document.getElementById('input-kirim-skor').value = skorAkhir;
-
-            // 3. Eksekusi pengiriman data murni browser
-            form.submit();
-
-            // 4. Ubah langsung teks tampilan menjadi sukses
-            setTimeout(() => {
-                document.getElementById('nilai-akhir').innerText = `Skor: ${skorAkhir}`;
-            }, 1500);
+            document.getElementById('nilai-akhir').innerText = `Skor: ${skorAkhir}`;
         }
     </script>
 </body>
