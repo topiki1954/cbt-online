@@ -35,11 +35,299 @@
         .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); }
         .btn { width: 100%; background: #2563eb; color: white; border: none; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s; }
         .btn:hover { background: #1d4ed8; }
-        .btn:disabled { background: #9ca3af; cursor: not-allowed; }
         .btn-secondary { background: #e5e7eb; color: #374151; width: auto; padding: 10px 20px; }
         .btn-secondary:hover { background: #d1d5db; }
         .btn-next { background: #2563eb; color: white; width: auto; padding: 10px 20px; }
         .btn-next:hover { background: #1d4ed8; }
         .btn-finish { background: #16a34a; color: white; width: auto; padding: 10px 20px; }
         .btn-finish:hover { background: #15803d; }
-        .flex-between { display: flex; justify-content: space-between; align-items
+        .flex-between { display: flex; justify-content: space-between; align-items: center; }
+        .header-ujian { border-bottom: 1px solid #e5e7eb; padding-bottom: 15px; margin-bottom: 20px; }
+        .timer-box { color: #dc2626; font-weight: bold; padding: 6px 12px; border-radius: 8px; border: 1px solid #fee2e2; font-family: monospace; background-color: #fef2f2; }
+        .badge { display: inline-block; padding: 4px 10px; font-size: 11px; font-weight: bold; border-radius: 50px; text-transform: uppercase; margin-bottom: 10px; margin-right: 5px; }
+        .badge-blue { background: #dbeafe; color: #1e40af; }
+        .badge-gray { background: #f3f4f6; color: #374151; }
+        .opsi-label { display: flex; align-items: center; padding: 14px; border: 1px solid #e5e7eb; border-radius: 10px; margin-bottom: 12px; cursor: pointer; transition: 0.15s; box-sizing: border-box; }
+        .opsi-label:hover { background: #f0fdf4; border-color: #bbf7d0; }
+        .opsi-label input { margin-right: 12px; width: 18px; height: 18px; }
+        .skor-box { font-size: 48px; font-weight: 900; color: #1f2937; background: #f9fafb; padding: 20px; border-radius: 12px; border: 1px solid #e5e7eb; margin: 20px 0; }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <!-- Form tersembunyi untuk tembus CORS via iframe -->
+    <form id="form-kirim-sheets" action="" method="POST" target="iframe-hidden" class="hidden">
+        <input type="text" name="nama" id="input-kirim-nama">
+        <input type="text" name="kelas" id="input-kirim-kelas">
+        <input type="text" name="skor" id="input-kirim-skor">
+    </form>
+    <iframe name="iframe-hidden" id="iframe-hidden" class="hidden"></iframe>
+
+    <!-- 1. HALAMAN MUKA / LOGIN UJIAN -->
+    <div id="form-biodata" class="container-box">
+        <div class="text-center">
+            <div style="font-size: 32px; margin-bottom: 10px;">📝</div>
+            <div class="title">Computer Based Test</div>
+            <div class="subtitle">Silakan lengkapi identitas untuk memulai ujian</div>
+        </div>
+        
+        <div class="form-group">
+            <label for="nama">Nama Lengkap Siswa</label>
+            <input type="text" id="nama" placeholder="Masukkan nama sesuai daftar hadir" required>
+        </div>
+        <div class="form-group">
+            <label for="kelas">Kelas / Ruang</label>
+            <input type="text" id="kelas" placeholder="Contoh: XII MIPA 1" required>
+        </div>
+        
+        <button type="button" onclick="mulaiUjian()" class="btn">Mulai Ujian Sekarang</button>
+    </div>
+
+    <!-- 2. AREA SOAL UJIAN -->
+    <div id="area-ujian" class="container-box hidden" style="max-width: 650px;">
+        <div class="header-ujian flex-between">
+            <div>
+                <span id="info-peserta" style="font-weight: bold; color: #374151; font-size: 18px;">-</span>
+                <div style="font-size: 11px; color: #10b981; font-weight: 600; text-transform: uppercase; margin-top: 2px;">Status: Ujian Aktif</div>
+            </div>
+            <div id="timer" class="timer-box">⏳ Sisa Waktu: 60:00</div>
+        </div>
+
+        <div id="konten-soal">
+            <!-- Soal dimuat secara dinamis -->
+        </div>
+
+        <div class="flex-between" style="margin-top: 25px; padding-top: 15px;">
+            <button id="btn-prev" onclick="soalSebelumnya()" class="btn btn-secondary">Sebelumnya</button>
+            <button id="btn-next" onclick="soalSelanjutnya()" class="btn btn-next">Selanjutnya</button>
+        </div>
+    </div>
+
+    <!-- 3. SCREEN BERHASIL SELESAI -->
+    <div id="area-selesai" class="container-box text-center hidden">
+        <div style="font-size: 40px; color: #16a34a; margin-bottom: 10px;">✅</div>
+        <div class="title" style="color: #16a34a;">Ujian Selesai!</div>
+        <p class="subtitle" style="margin-bottom: 15px;">Seluruh lembar jawaban Anda telah berhasil dihitung dan dikirim ke server sistem.</p>
+        <div class="skor-box" id="nilai-akhir">Skor: 0</div>
+        <p style="font-size: 12px; color: #9ca3af;">Halaman ini aman untuk ditutup sekarang.</p>
+    </div>
+
+    <script>
+        // URL Google Apps Script Web App
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyWv9AQ7XNMFq4vextrKKwOTlLzoEI7rcWOKrTxrx2587moTL85C9gikyfxdtzkFefVhw/exec"; 
+
+        // Bank Soal Default (Hanya diaktifkan jika file JSON rusak/tidak ada)
+        let bankSoal = [
+            { "id": 1, "jenis": "pg", "tanya": "Apa ibukota negara Indonesia?", "opsi": ["Surabaya", "Jakarta", "Bandung", "Medan"], "kunci": "Jakarta" },
+            { "id": 2, "jenis": "mcma", "tanya": "Manakah yang termasuk planet dalam tata surya? (Pilih lebih dari satu)", "opsi": ["Mars", "Bumi", "Matahari", "Pluto"], "kunci": ["Mars", "Bumi"] },
+            { "id": 3, "jenis": "uraian", "tanya": "Jelaskan secara singkat apa yang dimaksud dengan fotosintesis!", "kunci": "" }
+        ];
+
+        let namaPeserta = "";
+        let kelasPeserta = "";
+        let indeksSekarang = 0;
+        let jawabanSiswa = {}; 
+        let sisaWaktu = 3600; 
+        let hitungMundur;
+
+        // Memuat file banksoal.json secara aman (Bulletproof)
+        window.addEventListener('DOMContentLoaded', () => {
+            fetch('banksoal.json')
+                .then(response => {
+                    if(response.ok) return response.json();
+                    return null; // Abaikan jika error 404
+                })
+                .then(data => { 
+                    if (data && Array.isArray(data) && data.length > 0) {
+                        bankSoal = data; 
+                        console.log("Berhasil memuat banksoal.json!");
+                    }
+                })
+                .catch(() => { 
+                    console.log("JSON gagal diproses, menggunakan bank soal default.");
+                });
+        });
+
+        // FUNGSI MENGACAK URUTAN (Fisher-Yates Shuffle)
+        function acakArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function mulaiUjian() {
+            namaPeserta = document.getElementById('nama').value.trim();
+            kelasPeserta = document.getElementById('kelas').value.trim();
+            
+            if (!namaPeserta || !kelasPeserta) {
+                alert("Mohon isi Nama dan Kelas terlebih dahulu!");
+                return;
+            }
+
+            // 1. Mengacak urutan soal
+            acakArray(bankSoal);
+
+            // 2. Mengacak opsi A,B,C,D tiap soal
+            bankSoal.forEach(soal => {
+                if (soal.opsi && (soal.jenis === 'pg' || soal.jenis === 'mcma')) {
+                    acakArray(soal.opsi);
+                }
+            });
+
+            document.getElementById('form-biodata').classList.add('hidden');
+            document.getElementById('area-ujian').classList.remove('hidden');
+            document.getElementById('info-peserta').innerText = namaPeserta + " (" + kelasPeserta + ")";
+
+            tampilkanSoal();
+            mulaiTimer();
+        }
+
+        function tampilkanSoal() {
+            const soal = bankSoal[indeksSekarang];
+            let labelJenis = soal.jenis === 'pg' ? 'Pilihan Ganda' : soal.jenis === 'mcma' ? 'Pilihan Kompleks' : 'Uraian';
+            
+            let htmlKonten = `
+                <div style="margin-bottom: 15px;">
+                    <span class="badge badge-blue">Soal ${indeksSekarang + 1} dari ${bankSoal.length}</span>
+                    <span class="badge badge-gray">${labelJenis}</span>
+                </div>
+                <h3 style="font-size: 18px; color: #1f2937; margin-bottom: 20px; line-height: 1.6;">${soal.tanya}</h3>
+            `;
+
+            if (soal.jenis === 'pg') {
+                let htmlOpsi = '';
+                soal.opsi.forEach(opsi => {
+                    const checked = jawabanSiswa[soal.id] === opsi ? 'checked' : '';
+                    const opsiEscaped = opsi.replace(/'/g, "\\'");
+                    htmlOpsi += `
+                        <label class="opsi-label">
+                            <input type="radio" name="soal-${soal.id}" value="${opsi}" ${checked} onchange="simpanPG(${soal.id}, '${opsiEscaped}')">
+                            <span>${opsi}</span>
+                        </label>`;
+                });
+                htmlKonten += `<div>${htmlOpsi}</div>`;
+
+            } else if (soal.jenis === 'mcma') {
+                let htmlOpsi = '';
+                const jawabanSaatIni = jawabanSiswa[soal.id] || [];
+                soal.opsi.forEach(opsi => {
+                    const checked = jawabanSaatIni.includes(opsi) ? 'checked' : '';
+                    const opsiEscaped = opsi.replace(/'/g, "\\'");
+                    htmlOpsi += `
+                        <label class="opsi-label">
+                            <input type="checkbox" value="${opsi}" ${checked} onchange="simpanMCMA(${soal.id}, '${opsiEscaped}', this.checked)">
+                            <span>${opsi}</span>
+                        </label>`;
+                });
+                htmlKonten += `<div>${htmlOpsi}</div>`;
+
+            } else if (soal.jenis === 'uraian') {
+                const teksJawaban = jawabanSiswa[soal.id] || '';
+                htmlKonten += `
+                    <textarea oninput="simpanUraian(${soal.id}, this.value)" rows="5" placeholder="Ketikkan jawaban uraian Anda di sini..." style="width:100%; padding:12px; border:1px solid #d1d5db; border-radius:10px; font-size:15px;">${teksJawaban}</textarea>
+                `;
+            }
+
+            document.getElementById('konten-soal').innerHTML = htmlKonten;
+            document.getElementById('btn-prev').disabled = (indeksSekarang === 0);
+
+            const btnNext = document.getElementById('btn-next');
+            if (indeksSekarang === bankSoal.length - 1) {
+                btnNext.innerText = "Selesai & Kirim";
+                btnNext.className = "btn btn-finish";
+            } else {
+                btnNext.innerText = "Selanjutnya";
+                btnNext.className = "btn btn-next";
+            }
+        }
+
+        function simpanPG(soalId, jawaban) { 
+            jawabanSiswa[soalId] = jawaban; 
+        }
+
+        function simpanMCMA(soalId, opsi, isChecked) {
+            if (!jawabanSiswa[soalId]) jawabanSiswa[soalId] = [];
+            if (isChecked) {
+                if (!jawabanSiswa[soalId].includes(opsi)) jawabanSiswa[soalId].push(opsi);
+            } else {
+                jawabanSiswa[soalId] = jawabanSiswa[soalId].filter(item => item !== opsi);
+            }
+        }
+
+        function simpanUraian(soalId, teks) { 
+            jawabanSiswa[soalId] = teks; 
+        }
+
+        function soalSebelumnya() { 
+            if (indeksSekarang > 0) { 
+                indeksSekarang--; 
+                tampilkanSoal(); 
+            } 
+        }
+
+        function soalSelanjutnya() {
+            if (indeksSekarang < bankSoal.length - 1) {
+                indeksSekarang++;
+                tampilkanSoal();
+            } else {
+                if(confirm("Apakah Anda yakin ingin mengakhiri dan mengirim jawaban ujian?")) {
+                    prosesSelesaiUjian();
+                }
+            }
+        }
+
+        function mulaiTimer() {
+            hitungMundur = setInterval(() => {
+                sisaWaktu--;
+                let menit = Math.floor(sisaWaktu / 60);
+                let detik = sisaWaktu % 60;
+                document.getElementById('timer').innerText = "⏳ Sisa Waktu: " + menit.toString().padStart(2, '0') + ":" + detik.toString().padStart(2, '0');
+                if (sisaWaktu <= 0) { 
+                    clearInterval(hitungMundur); 
+                    alert("Waktu ujian telah habis!");
+                    prosesSelesaiUjian(); 
+                }
+            }, 1000);
+        }
+
+        function prosesSelesaiUjian() {
+            clearInterval(hitungMundur);
+            document.getElementById('area-ujian').classList.add('hidden');
+            document.getElementById('area-selesai').classList.remove('hidden');
+            document.getElementById('nilai-akhir').innerText = "Mengirim...";
+
+            let jumlahBenar = 0;
+            let totalSoalObjektif = 0;
+
+            bankSoal.forEach(soal => {
+                if (soal.jenis === 'pg') {
+                    totalSoalObjektif++;
+                    if (jawabanSiswa[soal.id] === soal.kunci) jumlahBenar++;
+                } else if (soal.jenis === 'mcma') {
+                    totalSoalObjektif++;
+                    const jawSiswa = jawabanSiswa[soal.id] || [];
+                    const jawKunci = soal.kunci || [];
+                    const cocok = jawSiswa.length === jawKunci.length && jawSiswa.every(v => jawKunci.includes(v));
+                    if (cocok) jumlahBenar++;
+                }
+            });
+
+            let skorAkhir = totalSoalObjektif > 0 ? Math.round((jumlahBenar / totalSoalObjektif) * 100) : 0;
+
+            const form = document.getElementById('form-kirim-sheets');
+            form.action = SCRIPT_URL;
+            document.getElementById('input-kirim-nama').value = namaPeserta;
+            document.getElementById('input-kirim-kelas').value = kelasPeserta;
+            document.getElementById('input-kirim-skor').value = skorAkhir;
+
+            form.submit();
+
+            setTimeout(() => {
+                document.getElementById('nilai-akhir').innerText = "Skor: " + skorAkhir;
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
