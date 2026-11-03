@@ -60,6 +60,7 @@
         <input type="text" name="nama" id="input-kirim-nama">
         <input type="text" name="kelas" id="input-kirim-kelas">
         <input type="text" name="skor" id="input-kirim-skor">
+       <input type="text" name="pokok_bahasan" id="input-kirim-pokok-bahasan">
     </form>
     <iframe name="iframe-hidden" id="iframe-hidden" class="hidden"></iframe>
 
@@ -365,6 +366,7 @@
             document.getElementById('input-kirim-nama').value = namaPeserta;
             document.getElementById('input-kirim-kelas').value = kelasPeserta;
             document.getElementById('input-kirim-skor').value = skorAkhir;
+           document.getElementById('input-kirim-pokok-bahasan').value = document.getElementById('judul-ujian').innerText;
 
             form.submit();
 
