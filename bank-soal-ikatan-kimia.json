@@ -1,0 +1,625 @@
+{
+  "title": "Asesmen Sumatif Ikatan Kimia",
+  "description": "Modul Seri 1-4: Ionik, Kovalen, Logam & Antarmolekul, Sintesis dan Aplikasi",
+  "version": "1.0",
+  "format": "CBT-JSON",
+  "duration_minutes": 90,
+  "question_count": 60,
+  "max_score": 142,
+  "scoring": {
+    "PG": 1,
+    "MCMA": 2,
+    "Uraian": 4,
+    "HOTS": 6,
+    "partial_credit_mcma": true,
+    "final_score_formula": "(skor_perolehan / 142) * 100"
+  },
+  "categories": {
+    "A1": "Artikel 1 - Fondasi dan Ikatan Ionik",
+    "A2": "Artikel 2 - Ikatan Kovalen",
+    "A3": "Artikel 3 - Ikatan Logam dan Gaya Antarmolekul",
+    "A4": "Artikel 4 - Sintesis dan Aplikasi"
+  },
+  "questions": [
+    {
+      "no": 1,
+      "type": "PG",
+      "score": 1,
+      "category": "A1",
+      "question": "Unsur X memiliki konfigurasi 2, 8, 1 dan Y memiliki 2, 8, 7. Ikatan yang terbentuk adalah...",
+      "options": ["kovalen nonpolar", "ionik", "kovalen polar", "logam", "hidrogen"],
+      "answer": "B",
+      "rubric": null
+    },
+    {
+      "no": 2,
+      "type": "PG",
+      "score": 1,
+      "category": "A1",
+      "question": "Atom Na melepaskan 1 elektron membentuk...",
+      "options": ["Na⁻", "Na⁺", "Na²⁺", "Cl⁻", "Na²⁻"],
+      "answer": "B",
+      "rubric": null
+    },
+    {
+      "no": 3,
+      "type": "PG",
+      "score": 1,
+      "category": "A1",
+      "question": "Atom Cl menerima 1 elektron membentuk...",
+      "options": ["Cl⁺", "Cl⁻", "Cl²⁻", "Cl²⁺", "Cl"],
+      "answer": "B",
+      "rubric": null
+    },
+    {
+      "no": 4,
+      "type": "PG",
+      "score": 1,
+      "category": "A1",
+      "question": "Rumus senyawa dari Mg²⁺ dan Cl⁻ yang benar adalah...",
+      "options": ["MgCl", "Mg₂Cl", "MgCl₂", "MgCl₃", "Mg₂Cl₂"],
+      "answer": "C",
+      "rubric": null
+    },
+    {
+      "no": 5,
+      "type": "PG",
+      "score": 1,
+      "category": "A1",
+      "question": "Rumus senyawa dari Al³⁺ dan O²⁻ yang benar adalah...",
+      "options": ["AlO", "Al₂O₃", "Al₃O₂", "AlO₃", "Al₂O"],
+      "answer": "B",
+      "rubric": null
+    },
+    {
+      "no": 6,
+      "type": "PG",
+      "score": 1,
+      "category": "A1",
+      "question": "NaCl padat tidak menghantarkan listrik karena...",
+      "options": ["tidak memiliki ion", "ion terikat rapat dalam kisi kristal", "memiliki elektron bebas", "mudah larut dalam air", "bersifat polar"],
+      "answer": "B",
+      "rubric": null
+    },
+    {
+      "no": 7,
+      "type": "PG",
+      "score": 1,
+      "category": "A1",
+      "question": "Penulisan Lewis NaCl yang paling tepat adalah...",
+      "options": ["Na[:Cl:]", "Na⁺[:Cl:]⁻", "Na−Cl", "[Na]⁺Cl⁻", "Na⁺:Cl:"],
+      "answer": "B",
+      "rubric": null
+    },
+    {
+      "no": 8,
+      "type": "PG",
+      "score": 1,
+      "category": "A1",
+      "question": "Ikatan ionik terjadi melalui proses...",
+      "options": ["pemakaian bersama elektron", "serah-terima elektron", "lautan elektron", "dipol sesaat", "ikatan hidrogen"],
+      "answer": "B",
+      "rubric": null
+    },
+    {
+      "no": 9,
+      "type": "PG",
+      "score": 1,
+      "category": "A2",
+      "question": "Ikatan dalam molekul H₂ termasuk...",
+      "options": ["ionik", "kovalen polar", "kovalen nonpolar", "logam", "hidrogen"],
+      "answer": "C",
+      "rubric": null
+    },
+    {
+      "no": 10,
+      "type": "PG",
+      "score": 1,
+      "category": "A2",
+      "question": "H₂O bersifat polar karena...",
+      "options": ["bentuk linear dan simetris", "bentuk bengkok dan perbedaan keelektronegatifan", "tidak memiliki pasangan elektron bebas", "tersusun dari atom nonlogam saja", "memiliki elektron bebas"],
+      "answer": "B",
+      "rubric": null
+    },
+    {
+      "no": 11,
+      "type": "PG",
+      "score": 1,
+      "category": "A2",
+      "question": "CO₂ bersifat nonpolar meskipun ikatannya polar karena...",
+      "options": ["bentuknya bengkok", "bentuk linear dan simetris sehingga momen dipol saling meniadakan", "merupakan senyawa ionik", "memiliki ikatan hidrogen", "memiliki lautan elektron"],
+      "answer": "B",
+      "rubric": null
+    },
+    {
+      "no": 12,
+      "type": "PG",
+      "score": 1,
+      "category": "A2",
+      "question": "Ikatan dalam N₂ adalah...",
+      "options": ["tunggal", "rangkap dua", "rangkap tiga", "ionik", "koordinasi"],
+      "answer": "C",
+      "rubric": null
+    },
+    {
+      "no": 13,
+      "type": "PG",
+      "score": 1,
+      "category": "A2",
+      "question": "Pembentukan NH₄⁺ dari NH₃ + H⁺ terjadi melalui ikatan...",
+      "options": ["ionik", "kovalen nonpolar", "kovalen koordinasi", "logam", "London"],
+      "answer": "C",
+      "rubric": null
+    },
+    {
+      "no": 14,
+      "type": "PG",
+      "score": 1,
+      "category": "A2",
+      "question": "Penulisan ion amonium yang benar adalah...",
+      "options": ["NH₄⁺", "NH₄⁻", "NH₃⁺", "NH₄", "NH₄²⁺"],
+      "answer": "A",
+      "rubric": null
+    },
+    {
+      "no": 15,
+      "type": "PG",
+      "score": 1,
+      "category": "A2",
+      "question": "HCl termasuk senyawa...",
+      "options": ["ionik", "kovalen nonpolar", "kovalen polar", "logam", "hidrogen"],
+      "answer": "C",
+      "rubric": null
+    },
+    {
+      "no": 16,
+      "type": "PG",
+      "score": 1,
+      "category": "A2",
+      "question": "Ikatan yang pasangan elektronnya hanya berasal dari satu atom disebut...",
+      "options": ["kovalen nonpolar", "kovalen polar", "kovalen koordinasi", "ionik", "logam"],
+      "answer": "C",
+      "rubric": null
+    },
+    {
+      "no": 17,
+      "type": "PG",
+      "score": 1,
+      "category": "A3",
+      "question": "Logam menghantarkan listrik karena...",
+      "options": ["ion-ionnya bebas", "memiliki elektron bebas/terdelokalisasi", "memiliki ikatan hidrogen", "memiliki dipol tetap", "memiliki ikatan kovalen polar"],
+      "answer": "B",
+      "rubric": null
+    },
+    {
+      "no": 18,
+      "type": "PG",
+      "score": 1,
+      "category": "A3",
+      "question": "Logam dapat ditempa karena...",
+      "options": ["ikatannya terarah", "lapisan atom dapat bergeser tanpa memutus ikatan", "ionnya terikat dalam kisi", "elektronnya lokal", "ikatannya kovalen kuat"],
+      "answer": "B",
+      "rubric": null
+    },
+    {
+      "no": 19,
+      "type": "PG",
+      "score": 1,
+      "category": "A3",
+      "question": "Gaya antarmolekul paling lemah adalah...",
+      "options": ["ikatan hidrogen", "dipol–dipol", "London", "kovalen", "ionik"],
+      "answer": "C",
+      "rubric": null
+    },
+    {
+      "no": 20,
+      "type": "PG",
+      "score": 1,
+      "category": "A3",
+      "question": "Ikatan hidrogen terjadi antara H yang terikat pada...",
+      "options": ["C dengan C", "N/O/F dengan N/O/F lain", "ion dengan ion", "logam dengan logam", "molekul nonpolar"],
+      "answer": "B",
+      "rubric": null
+    },
+    {
+      "no": 21,
+      "type": "PG",
+      "score": 1,
+      "category": "A3",
+      "question": "Air memiliki titik didih relatif tinggi karena...",
+      "options": ["gaya London", "dipol–dipol lemah", "ikatan hidrogen", "ikatan ionik", "ikatan logam"],
+      "answer": "C",
+      "rubric": null
+    },
+    {
+      "no": 22,
+      "type": "PG",
+      "score": 1,
+      "category": "A3",
+      "question": "Penulisan ikatan hidrogen yang benar adalah...",
+      "options": ["O−H−O", "O−H···O", "O=H···O", "O:H−O", "O−H"],
+      "answer": "B",
+      "rubric": null
+    },
+    {
+      "no": 23,
+      "type": "PG",
+      "score": 1,
+      "category": "A3",
+      "question": "Interaksi Na⁺ dengan molekul air dalam larutan NaCl adalah...",
+      "options": ["ion–dipol", "London", "hidrogen", "logam", "kovalen"],
+      "answer": "A",
+      "rubric": null
+    },
+    {
+      "no": 24,
+      "type": "PG",
+      "score": 1,
+      "category": "A4",
+      "question": "Intan dan grafit sama-sama tersusun dari karbon, tetapi sifatnya berbeda karena...",
+      "options": ["jenis atomnya berbeda", "jenis ikatan dan strukturnya berbeda", "massa atomnya berbeda", "warnanya berbeda", "suhunya berbeda"],
+      "answer": "B",
+      "rubric": null
+    },
+    {
+      "no": 25,
+      "type": "PG",
+      "score": 1,
+      "category": "A4",
+      "question": "Plastik polietilena tahan air karena...",
+      "options": ["bersifat polar", "bersifat nonpolar", "bersifat ionik", "bersifat logam", "memiliki ikatan hidrogen"],
+      "answer": "B",
+      "rubric": null
+    },
+    {
+      "no": 26,
+      "type": "PG",
+      "score": 1,
+      "category": "A4",
+      "question": "Obat yang mudah larut dalam air umumnya bersifat...",
+      "options": ["nonpolar", "polar atau ionik", "logam", "gas mulia", "hanya gaya London"],
+      "answer": "B",
+      "rubric": null
+    },
+    {
+      "no": 27,
+      "type": "PG",
+      "score": 1,
+      "category": "A4",
+      "question": "Logam yang lebih ringan dan sesuai untuk kawat listrik adalah...",
+      "options": ["Cu", "Al", "Fe", "Au", "Pb"],
+      "answer": "B",
+      "rubric": null
+    },
+    {
+      "no": 28,
+      "type": "PG",
+      "score": 1,
+      "category": "A4",
+      "question": "KCl dapat dimanfaatkan sebagai pupuk karena sifat ioniknya membuatnya...",
+      "options": ["mudah larut dalam air", "nonpolar", "menghantarkan listrik padat", "memiliki ikatan hidrogen", "berupa gas"],
+      "answer": "A",
+      "rubric": null
+    },
+    {
+      "no": 29,
+      "type": "PG",
+      "score": 1,
+      "category": "A4",
+      "question": "Perbedaan keelektronegatifan sangat besar umumnya menghasilkan ikatan...",
+      "options": ["ionik", "kovalen nonpolar", "logam", "London", "hidrogen"],
+      "answer": "A",
+      "rubric": null
+    },
+    {
+      "no": 30,
+      "type": "PG",
+      "score": 1,
+      "category": "A4",
+      "question": "Senyawa kovalen molekuler umumnya memiliki...",
+      "options": ["titik leleh tinggi", "titik leleh rendah", "daya hantar listrik padat", "ikatan ionik", "ikatan logam"],
+      "answer": "B",
+      "rubric": null
+    },
+    {
+      "no": 31,
+      "type": "MCMA",
+      "score": 2,
+      "category": "A1",
+      "question": "Manakah ciri ikatan ionik?",
+      "options": ["serah-terima elektron", "pemakaian bersama elektron", "tarik-menarik kation dan anion", "ion tersusun dalam kisi kristal", "elektron bebas dalam lautan elektron"],
+      "answer": ["A", "C", "D"],
+      "rubric": null
+    },
+    {
+      "no": 32,
+      "type": "MCMA",
+      "score": 2,
+      "category": "A1",
+      "question": "Manakah penulisan rumus senyawa ionik yang benar?",
+      "options": ["NaCl", "MgCl₂", "AlO", "Ca₃(PO₄)₂", "Na₂Cl"],
+      "answer": ["A", "B", "D"],
+      "rubric": null
+    },
+    {
+      "no": 33,
+      "type": "MCMA",
+      "score": 2,
+      "category": "A1",
+      "question": "Manakah pernyataan yang merupakan miskonsepsi tentang ikatan ionik?",
+      "options": ["ikatan ionik terjadi karena elektron dipakai bersama", "semua senyawa ionik menghantarkan listrik dalam wujud padat", "ikatan ionik terjadi karena serah-terima elektron", "NaCl padat tidak menghantarkan listrik karena ion terikat dalam kisi", "satu elektron melompat langsung secara sederhana dari Na ke Cl"],
+      "answer": ["A", "B", "E"],
+      "rubric": null
+    },
+    {
+      "no": 34,
+      "type": "MCMA",
+      "score": 2,
+      "category": "A2",
+      "question": "Manakah ciri ikatan kovalen polar?",
+      "options": ["perbedaan keelektronegatifan cukup besar", "bentuk molekul asimetris dapat menghasilkan momen dipol", "momen dipol tidak nol", "selalu menghantarkan listrik dalam semua wujud", "memiliki lautan elektron"],
+      "answer": ["A", "B", "C"],
+      "rubric": null
+    },
+    {
+      "no": 35,
+      "type": "MCMA",
+      "score": 2,
+      "category": "A2",
+      "question": "Manakah contoh senyawa/molekul kovalen nonpolar?",
+      "options": ["H₂", "HCl", "CO₂", "CH₄", "H₂O"],
+      "answer": ["A", "C", "D"],
+      "rubric": null
+    },
+    {
+      "no": 36,
+      "type": "MCMA",
+      "score": 2,
+      "category": "A2",
+      "question": "Manakah penulisan ikatan/rumus yang benar?",
+      "options": ["H−Cl", "O=C=O", "N≡N", "NH₄⁺", "CaCl"],
+      "answer": ["A", "B", "C", "D"],
+      "rubric": null
+    },
+    {
+      "no": 37,
+      "type": "MCMA",
+      "score": 2,
+      "category": "A3",
+      "question": "Manakah sifat logam yang dapat dijelaskan oleh ikatan logam?",
+      "options": ["konduktor listrik", "malleable", "ductile", "berkilau", "selalu larut dalam air"],
+      "answer": ["A", "B", "C", "D"],
+      "rubric": null
+    },
+    {
+      "no": 38,
+      "type": "MCMA",
+      "score": 2,
+      "category": "A3",
+      "question": "Manakah yang termasuk gaya antarmolekul?",
+      "options": ["gaya London", "dipol–dipol", "ikatan hidrogen", "ion–dipol", "ikatan kovalen"],
+      "answer": ["A", "B", "C", "D"],
+      "rubric": null
+    },
+    {
+      "no": 39,
+      "type": "MCMA",
+      "score": 2,
+      "category": "A3",
+      "question": "Manakah penulisan gaya antarmolekul yang benar?",
+      "options": ["O−H···O", "HCl···HCl", "CH₄···CH₄", "N≡N", "Na⁺Cl⁻"],
+      "answer": ["A", "B", "C"],
+      "rubric": null
+    },
+    {
+      "no": 40,
+      "type": "MCMA",
+      "score": 2,
+      "category": "A4",
+      "question": "Faktor yang menentukan sifat bahan adalah...",
+      "options": ["jenis ikatan", "gaya antarmolekul", "struktur/bentuk molekul", "warna kemasan", "jenis atom saja"],
+      "answer": ["A", "B", "C"],
+      "rubric": null
+    },
+    {
+      "no": 41,
+      "type": "MCMA",
+      "score": 2,
+      "category": "A4",
+      "question": "Manakah contoh penerapan konsep ikatan yang tepat?",
+      "options": ["NaCl untuk garam dapur", "Cu untuk kabel listrik", "polietilena untuk kemasan tahan air", "H₂O sebagai pelarut polar", "grafit sebagai intan"],
+      "answer": ["A", "B", "C", "D"],
+      "rubric": null
+    },
+    {
+      "no": 42,
+      "type": "MCMA",
+      "score": 2,
+      "category": "A4",
+      "question": "Manakah pernyataan yang benar?",
+      "options": ["intan dan grafit berbeda sifat karena ikatan/strukturnya berbeda", "semua senyawa kovalen tidak dapat menghantarkan listrik", "HCl dalam air dapat menghantarkan listrik", "perbedaan keelektronegatifan besar cenderung ionik", "gaya antarmolekul selalu lebih kuat daripada ikatan kovalen"],
+      "answer": ["A", "C", "D"],
+      "rubric": null
+    },
+    {
+      "no": 43,
+      "type": "Uraian",
+      "score": 4,
+      "category": "A1",
+      "question": "Jelaskan proses terjadinya ikatan ionik pada NaCl, lalu tuliskan persamaan pembentukan Na⁺ dan Cl⁻.",
+      "options": null,
+      "answer": null,
+      "rubric": "Menjelaskan Na melepas 1 e⁻ menjadi Na⁺; Cl menerima 1 e⁻ menjadi Cl⁻; menyebut gaya elektrostatik/kisi; menulis Na → Na⁺ + e⁻ dan Cl + e⁻ → Cl⁻."
+    },
+    {
+      "no": 44,
+      "type": "Uraian",
+      "score": 4,
+      "category": "A1",
+      "question": "Mengapa NaCl padat tidak menghantarkan listrik, tetapi larutan NaCl menghantarkan listrik? Jelaskan.",
+      "options": null,
+      "answer": null,
+      "rubric": "Padat: ion terikat dalam kisi sehingga tidak bebas bergerak. Larutan: ion terdisosiasi menjadi Na⁺(aq) dan Cl⁻(aq) sehingga bebas bergerak dan menghantarkan listrik."
+    },
+    {
+      "no": 45,
+      "type": "Uraian",
+      "score": 4,
+      "category": "A1",
+      "question": "Tuliskan rumus yang benar untuk senyawa dari: a. Mg²⁺ dan Cl⁻; b. Al³⁺ dan O²⁻; c. Ca²⁺ dan PO₄³⁻.",
+      "options": null,
+      "answer": null,
+      "rubric": "a. MgCl₂; b. Al₂O₃; c. Ca₃(PO₄)₂."
+    },
+    {
+      "no": 46,
+      "type": "Uraian",
+      "score": 4,
+      "category": "A2",
+      "question": "Jelaskan proses terbentuknya ikatan kovalen pada H₂O dan gambarkan struktur Lewis sederhananya.",
+      "options": null,
+      "answer": null,
+      "rubric": "O membentuk dua ikatan kovalen dengan dua H melalui pemakaian bersama pasangan elektron; O memiliki dua pasangan elektron bebas; bentuk bengkok; struktur H−O−H."
+    },
+    {
+      "no": 47,
+      "type": "Uraian",
+      "score": 4,
+      "category": "A2",
+      "question": "Bedakan ikatan kovalen polar dan nonpolar, lalu berikan masing-masing dua contoh.",
+      "options": null,
+      "answer": null,
+      "rubric": "Polar: elektron tidak dibagi setara, ada kutub δ⁺/δ⁻, contoh HCl dan H₂O. Nonpolar: pembagian elektron relatif setara/simetris, contoh H₂ dan CO₂."
+    },
+    {
+      "no": 48,
+      "type": "Uraian",
+      "score": 4,
+      "category": "A3",
+      "question": "Jelaskan mengapa logam dapat menghantarkan listrik dan dapat ditempa berdasarkan model ikatan logam.",
+      "options": null,
+      "answer": null,
+      "rubric": "Logam memiliki kation dalam kisi dan lautan elektron bebas; elektron bebas menghantarkan listrik; lapisan atom dapat bergeser tanpa memutus ikatan sehingga malleable/ductile."
+    },
+    {
+      "no": 49,
+      "type": "Uraian",
+      "score": 4,
+      "category": "A3",
+      "question": "Jelaskan apa itu ikatan hidrogen dan mengapa air memiliki titik didih relatif tinggi.",
+      "options": null,
+      "answer": null,
+      "rubric": "Ikatan hidrogen adalah tarik-menarik antara H yang terikat pada N/O/F dengan pasangan elektron bebas N/O/F molekul lain. Air memiliki banyak ikatan hidrogen sehingga titik didihnya tinggi."
+    },
+    {
+      "no": 50,
+      "type": "Uraian",
+      "score": 4,
+      "category": "A4",
+      "question": "Bandingkan sifat senyawa ionik dan senyawa kovalen molekuler dalam hal titik leleh, kelarutan dalam air, dan daya hantar listrik. Beri contoh.",
+      "options": null,
+      "answer": null,
+      "rubric": "Ionik: titik leleh tinggi, umumnya larut air, konduktor dalam larutan/lelehan, contoh NaCl. Kovalen molekuler: titik leleh rendah, umumnya tidak larut air kecuali polar, tidak menghantarkan listrik, contoh gula."
+    },
+    {
+      "no": 51,
+      "type": "Uraian",
+      "score": 4,
+      "category": "A4",
+      "question": "Mengapa intan dan grafit memiliki sifat sangat berbeda padahal sama-sama tersusun dari karbon?",
+      "options": null,
+      "answer": null,
+      "rubric": "Intan memiliki jaringan kovalen tiga dimensi yang kaku; grafit tersusun lapisan kovalen yang terikat lemah oleh gaya antarmolekul. Perbedaan struktur/ikatan menyebabkan sifat berbeda."
+    },
+    {
+      "no": 52,
+      "type": "Uraian",
+      "score": 4,
+      "category": "A4",
+      "question": "Seorang teknisi ingin memilih logam untuk kawat listrik yang ringan. Bandingkan tembaga dan aluminium berdasarkan konsep ikatan logam.",
+      "options": null,
+      "answer": null,
+      "rubric": "Aluminium lebih ringan daripada tembaga; keduanya konduktor karena ikatan logam, tetapi aluminium memberikan rasio kekuatan/massa lebih baik untuk kawat ringan."
+    },
+    {
+      "no": 53,
+      "type": "HOTS",
+      "score": 6,
+      "category": "A1",
+      "question": "Rancang percobaan sederhana untuk membedakan NaCl padat, larutan NaCl, larutan gula, dan larutan HCl menggunakan alat uji daya hantar listrik. Prediksikan hasilnya dan jelaskan alasannya.",
+      "options": null,
+      "answer": null,
+      "rubric": "Rangkaian baterai–lampu–elektroda. Prediksi: larutan NaCl dan HCl menyalakan lampu karena ion bebas; larutan gula tidak; NaCl padat tidak karena ion terikat kisi."
+    },
+    {
+      "no": 54,
+      "type": "HOTS",
+      "score": 6,
+      "category": "A1",
+      "question": "Mengapa garam dapur dapat larut dalam air tetapi tidak larut dalam minyak? Jelaskan berdasarkan jenis ikatan dan kepolaran.",
+      "options": null,
+      "answer": null,
+      "rubric": "Air polar dapat berinteraksi ion–dipol dengan NaCl; minyak nonpolar tidak dapat berinteraksi kuat dengan ion Na⁺/Cl⁻ sehingga garam tidak larut."
+    },
+    {
+      "no": 55,
+      "type": "HOTS",
+      "score": 6,
+      "category": "A2",
+      "question": "Rancang percobaan untuk membuktikan bahwa air bersifat polar sedangkan minyak bersifat nonpolar menggunakan penggaris plastik yang digosok kain wol. Jelaskan prediksi hasilnya.",
+      "options": null,
+      "answer": null,
+      "rubric": "Gosok penggaris dengan kain wol, dekatkan ke aliran air dan minyak. Air membelok karena polar; minyak tidak membelok karena nonpolar."
+    },
+    {
+      "no": 56,
+      "type": "HOTS",
+      "score": 6,
+      "category": "A2",
+      "question": "Molekul CO₂ dan H₂O sama-sama memiliki ikatan polar, tetapi CO₂ nonpolar dan H₂O polar. Analisis penyebabnya dan prediksikan kelarutannya dalam air.",
+      "options": null,
+      "answer": null,
+      "rubric": "CO₂ linear simetris sehingga momen dipol saling meniadakan; H₂O bengkok sehingga momen dipol tidak nol. CO₂ sukar larut air; H₂O bercampur dengan air."
+    },
+    {
+      "no": 57,
+      "type": "HOTS",
+      "score": 6,
+      "category": "A3",
+      "question": "Seorang insinyur harus memilih logam untuk badan pesawat: besi atau aluminium. Analisis pilihan yang lebih tepat berdasarkan ikatan logam, massa, kekuatan, dan sifat bahan.",
+      "options": null,
+      "answer": null,
+      "rubric": "Aluminium lebih tepat: lebih ringan, ikatan logam tetap memberikan konduktivitas/kekuatan, dan dapat dibentuk; besi lebih berat dan mudah teroksidasi."
+    },
+    {
+      "no": 58,
+      "type": "HOTS",
+      "score": 6,
+      "category": "A3",
+      "question": "Mengapa air (H₂O) mendidih pada suhu jauh lebih tinggi daripada H₂S, meskipun keduanya molekul polar? Jelaskan berdasarkan gaya antarmolekul.",
+      "options": null,
+      "answer": null,
+      "rubric": "H₂O memiliki ikatan hidrogen antarmolekul yang kuat; H₂S hanya dipol–dipol/London lebih lemah, sehingga titik didih H₂O jauh lebih tinggi."
+    },
+    {
+      "no": 59,
+      "type": "HOTS",
+      "score": 6,
+      "category": "A4",
+      "question": "Seorang peneliti ingin mengekstrak senyawa herbal. Senyawa A bersifat polar, senyawa B nonpolar. Tentukan pelarut yang sesuai untuk masing-masing dan jelaskan alasannya.",
+      "options": null,
+      "answer": null,
+      "rubric": "Senyawa polar → pelarut polar seperti air/etanol; senyawa nonpolar → pelarut nonpolar seperti heksana/minyak. Prinsip like dissolves like."
+    },
+    {
+      "no": 60,
+      "type": "HOTS",
+      "score": 6,
+      "category": "A4",
+      "question": "Evaluasi pernyataan berikut: “Semua senyawa ionik menghantarkan listrik dan semua senyawa kovalen tidak menghantarkan listrik.” Benar atau salah? Koreksi pernyataan tersebut dengan contoh.",
+      "options": null,
+      "answer": null,
+      "rubric": "Salah. Senyawa ionik hanya menghantarkan listrik dalam larutan/lelehan, bukan padat (NaCl padat tidak konduktor). Tidak semua kovalen tidak konduktor; HCl(aq) dapat menghantarkan listrik karena terionisasi."
+    }
+  ]
+}
