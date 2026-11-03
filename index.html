@@ -11,6 +11,13 @@
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+<!-- Form bayangan tersembunyi untuk menembus pengaman CORS browser -->
+<form id="form-kirim-sheets" action="#" method="POST" target="iframe-hidden" class="hidden">
+    <input type="text" name="nama" id="input-kirim-nama">
+    <input type="text" name="kelas" id="input-kirim-kelas">
+    <input type="text" name="skor" id="input-kirim-skor">
+</form>
+<iframe name="iframe-hidden" id="iframe-hidden" class="hidden"></iframe>
 
     <!-- FORM BIODATA SISWA -->
     <div id="form-biodata" class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
@@ -153,29 +160,36 @@
         }
 
         function prosesSelesaiUjian() {
-            clearInterval(hitungMundur);
-            document.getElementById('area-ujian').classList.add('hidden');
-            
-            // Tampilkan layar loading sederhana
-            document.getElementById('area-selesai').classList.remove('hidden');
-            document.getElementById('nilai-akhir').innerText = "Mengirim...";
+    clearInterval(hitungMundur);
+    document.getElementById('area-ujian').classList.add('hidden');
+    document.getElementById('area-selesai').classList.remove('hidden');
+    document.getElementById('nilai-akhir').innerText = "Mengirim...";
 
-            // Hitung Skor
-            let jumlahBenar = 0;
-            bankSoal.forEach(soal => {
-                if (jawabanSiswa[soal.id] === soal.kunci) {
-                    jumlahBenar++;
-                }
-            });
-            let skorAkhir = Math.round((jumlahBenar / bankSoal.length) * 100);
+    // 1. Hitung Skor Akhir
+    let jumlahBenar = 0;
+    bankSoal.forEach(soal => {
+        if (jawabanSiswa[soal.id] === soal.kunci) {
+            jumlahBenar++;
+        }
+    });
+    let skorAkhir = Math.round((jumlahBenar / bankSoal.length) * 100);
 
-            // Kirim Data ke Google Sheets
-            const payload = {
-                nama: namaPeserta,
-                kelas: kelasPeserta,
-                skor: skorAkhir
-            };
+    // 2. Tembakkan langsung ke Form tersembunyi agar lolos CORS
+    const form = document.getElementById('form-kirim-sheets');
+    form.action = SCRIPT_URL; // Mengisi URL Web App Google Sheets Anda
 
+    document.getElementById('input-kirim-nama').value = namaPeserta;
+    document.getElementById('input-kirim-kelas').value = kelasPeserta;
+    document.getElementById('input-kirim-skor').value = skorAkhir;
+
+    // 3. Eksekusi pengiriman data murni browser
+    form.submit();
+
+    // 4. Ubah langsung teks tampilan menjadi sukses
+    setTimeout(() => {
+        document.getElementById('nilai-akhir').innerText = `Skor: ${skorAkhir}`;
+    }, 1500);
+}
            fetch(SCRIPT_URL, {
     method: "POST",
     headers: {
