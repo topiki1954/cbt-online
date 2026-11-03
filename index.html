@@ -5,11 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistem CBT Mandiri Offline-Safe</title>
     <style>
-        /* DESAIN INTERNAL - ANTI BLOKIR INTERNET */
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
             background: linear-gradient(135deg, #e0e7ff, #eef2f6);
-            min-h: 100vh;
+            min-height: 100vh;
             margin: 0;
             display: flex;
             align-items: center;
@@ -31,7 +30,7 @@
         .title { color: #1e3a8a; margin-bottom: 5px; font-size: 24px; font-weight: 800; }
         .subtitle { color: #6b7280; font-size: 14px; margin-top: 0; margin-bottom: 25px; }
         .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-size: 12px; font-weight: 600; color: #4b5563; uppercase tracking-wider; margin-bottom: 8px; text-transform: uppercase; }
+        .form-group label { display: block; font-size: 12px; font-weight: 600; color: #4b5563; margin-bottom: 8px; text-transform: uppercase; tracking-wider: 0.05em; }
         .form-group input, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 10px; box-sizing: border-box; font-size: 15px; transition: 0.2s; }
         .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); }
         .btn { width: 100%; background: #2563eb; color: white; border: none; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s; }
@@ -44,16 +43,14 @@
         .btn-finish:hover { background: #15803d; }
         .flex-between { display: flex; justify-content: space-between; align-items: center; }
         .header-ujian { border-bottom: 1px solid #e5e7eb; padding-bottom: 15px; margin-bottom: 20px; }
-        .timer-box { bg-color: #fef2f2; color: #dc2626; font-weight: bold; padding: 6px 12px; border-radius: 8px; border: 1px solid #fee2e2; font-family: monospace; }
+        .timer-box { color: #dc2626; font-weight: bold; padding: 6px 12px; border-radius: 8px; border: 1px solid #fee2e2; font-family: monospace; background-color: #fef2f2; }
         .badge { display: inline-block; padding: 4px 10px; font-size: 11px; font-weight: bold; border-radius: 50px; text-transform: uppercase; margin-bottom: 10px; margin-right: 5px; }
         .badge-blue { background: #dbeafe; color: #1e40af; }
         .badge-gray { background: #f3f4f6; color: #374151; }
-        .opsi-label { display: flex; align-items: center; padding: 14px; border: 1px solid #e5e7eb; border-radius: 10px; margin-bottom: 12px; cursor: pointer; transition: 0.15s; }
+        .opsi-label { display: flex; align-items: center; padding: 14px; border: 1px solid #e5e7eb; border-radius: 10px; margin-bottom: 12px; cursor: pointer; transition: 0.15s; box-sizing: border-box; }
         .opsi-label:hover { background: #f0fdf4; border-color: #bbf7d0; }
         .opsi-label input { margin-right: 12px; width: 18px; height: 18px; }
         .skor-box { font-size: 48px; font-weight: 900; color: #1f2937; background: #f9fafb; padding: 20px; border-radius: 12px; border: 1px solid #e5e7eb; margin: 20px 0; }
-        
-        /* KUNCI UTAMA: Menyembunyikan elemen dengan sempurna tanpa Tailwind */
         .hidden { display: none !important; }
     </style>
 </head>
@@ -101,7 +98,7 @@
             <!-- Soal dimuat di sini -->
         </div>
 
-        <div class="flex-between" style="margin-top: 25px; border-t: 1px solid #efefef; padding-top: 15px;">
+        <div class="flex-between" style="margin-top: 25px; padding-top: 15px;">
             <button id="btn-prev" onclick="soalSebelumnya()" class="btn btn-secondary">Sebelumnya</button>
             <button id="btn-next" onclick="soalSelanjutnya()" class="btn btn-next">Selanjutnya</button>
         </div>
@@ -120,40 +117,47 @@
         // MASUKKAN URL GOOGLE APPS SCRIPT ANDA DI SINI
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyWv9AQ7XNMFq4vextrKKwOTlLzoEI7rcWOKrTxrx2587moTL85C9gikyfxdtzkFefVhw/exec"; 
 
-        let bankSoal = []; 
+        // Bank Soal Default (Otomatis digunakan jika file json luar tidak ada/error)
+        let bankSoal = [
+            { "id": 1, "jenis": "pg", "tanya": "Apa ibukota negara Indonesia?", "opsi": ["Surabaya", "Jakarta", "Bandung", "Medan"], "kunci": "Jakarta" },
+            { "id": 2, "jenis": "mcma", "tanya": "Manakah yang termasuk planet dalam tata surya? (Pilih lebih dari satu)", "opsi": ["Mars", "Bumi", "Matahari", "Pluto"], "kunci": ["Mars", "Bumi"] },
+            { "id": 3, "jenis": "uraian", "tanya": "Jelaskan secara singkat apa yang dimaksud dengan fotosintesis!", "kunci": "" }
+        ];
+
         let namaPeserta = "";
         let kelasPeserta = "";
         let indeksSekarang = 0;
         let jawabanSiswa = {}; 
-        let sisaWaktu = 3600; // 60 menit
+        let sisaWaktu = 3600; 
         let hitungMundur;
 
-        // FUNGSI MEMBACA FILE JSON JIKA ADA, JIKA GAGAL AKAN MENGGUNAKAN FALLBACK LOKAL (ANTI-FREEZE)
+        // Mencoba memuat file banksoal.json jika ada di server GitHub Anda
         window.addEventListener('DOMContentLoaded', () => {
             fetch('banksoal.json')
-                .then(response => response.json())
+                .then(response => {
+                    if(response.ok) return response.json();
+                    throw new Error('File tidak ditemukan');
+                })
                 .then(data => { 
                     bankSoal = data; 
+                    console.log("Berhasil memuat banksoal.json dari repositori!");
                 })
                 .catch(error => { 
-                    console.log("Membaca data internal sebagai cadangan...");
-                    // Cadangan soal langsung di dalam script jika banksoal.json gagal diakses jaringan
-                    bankSoal = [
-                        { "id": 1, "jenis": "pg", "tanya": "Apa ibukota negara Indonesia?", "opsi": ["Surabaya", "Jakarta", "Bandung", "Medan"], "kunci": "Jakarta" },
-                        { "id": 2, "jenis": "mcma", "tanya": "Manakah yang termasuk planet dalam tata surya? (Pilih lebih dari satu)", "opsi": ["Mars", "Bumi", "Matahari", "Pluto"], "kunci": ["Mars", "Bumi"] },
-                        { "id": 3, "jenis": "uraian", "tanya": "Jelaskan secara singkat apa yang dimaksud dengan fotosintesis!", "kunci": "" }
-                    ];
+                    console.log("Menggunakan bank soal internal cadangan.");
                 });
         });
 
         function mulaiUjian() {
             namaPeserta = document.getElementById('nama').value.trim();
             kelasPeserta = document.getElementById('kelas').value.trim();
-            if (!namaPeserta || !kelasPeserta) return alert("Mohon isi Nama dan Kelas!");
+            if (!namaPeserta || !kelasPeserta) {
+                alert("Mohon isi Nama dan Kelas!");
+                return;
+            }
 
             document.getElementById('form-biodata').classList.add('hidden');
             document.getElementById('area-ujian').classList.remove('hidden');
-            document.getElementById('info-peserta').innerText = namaPeserta;
+            document.getElementById('info-peserta').innerText = namaPeserta + " (" + kelasPeserta + ")";
 
             tampilkanSoal();
             mulaiTimer();
@@ -192,10 +196,10 @@ htmlOpsi += `
 htmlKonten += <div>${htmlOpsi}</div>;
 } else if (soal.jenis === 'uraian') {
 const teksJawaban = jawabanSiswa[soal.id] || '';
-htmlKonten += <textarea oninput="simpanUraian(${soal.id}, this.value)" rows="5" placeholder="Ketikkan jawaban uraian Anda di sini...">${teksJawaban}</textarea>;
+htmlKonten += <textarea oninput="simpanUraian(${soal.id}, this.value)" rows="5" placeholder="Ketikkan jawaban uraian Anda di sini..." style="width:100%; padding:12px; border:1px solid #d1d5db; border-radius:10px; font-size:15px;">${teksJawaban}</textarea>;
 }
 document.getElementById('konten-soal').innerHTML = htmlKonten;
-document.getElementById('btn-prev').disabled = indeksSekarang === 0;
+document.getElementById('btn-prev').disabled = (indeksSekarang === 0);
 const btnNext = document.getElementById('btn-next');
 if (indeksSekarang === bankSoal.length - 1) {
 btnNext.innerText = "Selesai & Kirim";
@@ -229,7 +233,7 @@ hitungMundur = setInterval(() => {
 sisaWaktu--;
 let menit = Math.floor(sisaWaktu / 60);
 let detik = sisaWaktu % 60;
-document.getElementById('timer').innerText = ⏳ Sisa Waktu: ${menit.toString().padStart(2, '0')}:${detik.toString().padStart(2, '0')};
+document.getElementById('timer').innerText = "⏳ Sisa Waktu: " + menit.toString().padStart(2, '0') + ":" + detik.toString().padStart(2, '0');
 if (sisaWaktu <= 0) { clearInterval(hitungMundur); prosesSelesaiUjian(); }
 }, 1000);
 }
@@ -243,9 +247,6 @@ let totalSoalObjektif = 0;
 bankSoal.forEach(soal => {
 if (soal.jenis === 'pg') {
 totalSoalObjektif++;
-if (jawabanSiswa[soal.id] === Math.round(soal.kunci)) {
-// toleransi format kunci data
-}
 if (jawabanSiswa[soal.id] === soal.kunci) jumlahBenar++;
 } else if (soal.jenis === 'mcma') {
 totalSoalObjektif++;
@@ -263,6 +264,6 @@ document.getElementById('input-kirim-kelas').value = kelasPeserta;
 document.getElementById('input-kirim-skor').value = skorAkhir;
 form.submit();
 setTimeout(() => {
-document.getElementById('nilai-akhir').innerText = Skor: ${skorAkhir};
+document.getElementById('nilai-akhir').innerText = "Skor: " + skorAkhir;
 }, 1500);
 }
