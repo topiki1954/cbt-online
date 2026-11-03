@@ -56,7 +56,6 @@
 </head>
 <body>
 
-    <!-- Form tersembunyi untuk tembus CORS via iframe -->
     <form id="form-kirim-sheets" action="" method="POST" target="iframe-hidden" class="hidden">
         <input type="text" name="nama" id="input-kirim-nama">
         <input type="text" name="kelas" id="input-kirim-kelas">
@@ -115,9 +114,13 @@
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyWv9AQ7XNMFq4vextrKKwOTlLzoEI7rcWOKrTxrx2587moTL85C9gikyfxdtzkFefVhw/exec"; 
-        
-        // Nama file JSON disesuaikan persis dengan file di repository GitHub Anda
-        const JSON_FILE_PATH = 'bank-soal-ikatan-kimia.json';
+
+        // DAFTAR PILIHAN NAMA FILE JSON (Akan dicoba satu per satu secara otomatis)
+        const KEMUNGKINAN_FILE_JSON = [
+            'bank-soal-ikatan-kimia.json',
+            'banksoal.json',
+            'bank_soal.json'
+        ];
 
         let bankSoal = [];
         let totalSkorMaksimal = 142; 
@@ -125,58 +128,65 @@
         let kelasPeserta = "";
         let indeksSekarang = 0;
         let jawabanSiswa = {}; 
-        let sisaWaktu = 5400; // Default 90 menit (5400 detik)
+        let sisaWaktu = 5400; // 90 menit
         let hitungMundur;
 
-        // Memuat file bank-soal-ikatan-kimia.json dan menyesuaikan format strukturnya
-        window.addEventListener('DOMContentLoaded', () => {
-            fetch(JSON_FILE_PATH)
-                .then(response => {
-                    if(response.ok) return response.json();
-                    throw new Error('File JSON tidak ditemukan');
-                })
-                .then(data => { 
-                    if (data && data.questions) {
-                        // Mengisi judul jika ada di JSON
-                        if(data.title) document.getElementById('judul-ujian').innerText = data.title;
-                        if(data.description) document.getElementById('subjudul-ujian').innerText = data.description;
-                        if(data.duration_minutes) sisaWaktu = data.duration_minutes * 60;
-                        if(data.max_score) totalSkorMaksimal = data.max_score;
+        // Memuat file JSON dari repositori GitHub
+        async function muatBankSoal() {
+            for (let fileName of KEMUNGKINAN_FILE_JSON) {
+                try {
+                    let response = await fetch(fileName);
+                    if (response.ok) {
+                        let data = await response.json();
+                        
+                        // Cek jika struktur data berupa objek berproperti 'questions' (seperti file Anda)
+                        let rawQuestions = Array.isArray(data) ? data : (data.questions || []);
+                        
+                        if (rawQuestions.length > 0) {
+                            if (data.title) document.getElementById('judul-ujian').innerText = data.title;
+                            if (data.description) document.getElementById('subjudul-ujian').innerText = data.description;
+                            if (data.duration_minutes) sisaWaktu = data.duration_minutes * 60;
+                            if (data.max_score) totalSkorMaksimal = data.max_score;
 
-                        // Konversi format JSON khusus Anda ke format universal CBT
-                        bankSoal = data.questions.map(q => {
-                            let typeLower = q.type.toLowerCase();
-                            
-                            // Menyesuaikan kunci jawaban berbentuk indeks 'A','B','C' menjadi teks opsi
-                            let kunciProses = q.answer;
-                            if (typeLower === 'pg' && typeof q.answer === 'string' && q.answer.length === 1) {
-                                let indexChar = q.answer.charCodeAt(0) - 65;
-                                if (q.options && q.options[indexChar]) kunciProses = q.options[indexChar];
-                            } else if (typeLower === 'mcma' && Array.isArray(q.answer)) {
-                                kunciProses = q.answer.map(char => {
-                                    let idx = char.charCodeAt(0) - 65;
-                                    return q.options[idx] ? q.options[idx] : char;
-                                });
-                            }
+                            // Format ulang struktur soal ke format CBT
+                            bankSoal = rawQuestions.map(q => {
+                                let typeLower = (q.type || q.jenis || 'pg').toLowerCase();
+                                let kunciProses = q.answer || q.kunci;
 
-                            return {
-                                id: q.no,
-                                jenis: typeLower,
-                                tanya: q.question,
-                                opsi: q.options ? [...q.options] : null,
-                                kunci: kunciProses,
-                                bobot: q.score || 1
-                            };
-                        });
+                                // Pemetaan Kunci Jawaban Kategori "A", "B", "C", "D", "E" ke Teks Opsi
+                                if (typeLower === 'pg' && typeof kunciProses === 'string' && kunciProses.length === 1) {
+                                    let idx = kunciProses.charCodeAt(0) - 65;
+                                    if (q.options && q.options[idx]) kunciProses = q.options[idx];
+                                } else if (typeLower === 'mcma' && Array.isArray(kunciProses)) {
+                                    kunciProses = kunciProses.map(char => {
+                                        let idx = char.charCodeAt(0) - 65;
+                                        return (q.options && q.options[idx]) ? q.options[idx] : char;
+                                    });
+                                }
 
-                        console.log("Berhasil memuat " + bankSoal.length + " soal dari " + JSON_FILE_PATH);
+                                return {
+                                    id: q.no || q.id,
+                                    jenis: typeLower,
+                                    tanya: q.question || q.tanya,
+                                    opsi: q.options || q.opsi || null,
+                                    kunci: kunciProses,
+                                    bobot: q.score || 1
+                                };
+                            });
+
+                            console.log(`Berhasil memuat ${bankSoal.length} soal dari file: ${fileName}`);
+                            return; // Berhenti mencari jika sudah ketemu
+                        }
                     }
-                })
-                .catch(err => { 
-                    console.error("Gagal membaca JSON:", err);
-                    alert("Peringatan: Gagal membaca file " + JSON_FILE_PATH + ". Pastikan file berada di folder yang sama!");
-                });
-        });
+                } catch (e) {
+                    // Lanjut mencoba nama file berikutnya
+                }
+            }
+            
+            console.error("Gagal menemukan file JSON soal di GitHub!");
+        }
+
+        window.addEventListener('DOMContentLoaded', muatBankSoal);
 
         function acakArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
@@ -195,14 +205,14 @@
             }
 
             if (bankSoal.length === 0) {
-                alert("Soal belum selesai dimuat. Silakan muat ulang halaman!");
+                alert("Soal belum berhasil dimuat dari file JSON. Pastikan nama file JSON di GitHub sudah benar dan berada di folder yang sama dengan index.html!");
                 return;
             }
 
             // Acak urutan soal
             acakArray(bankSoal);
 
-            // Acak urutan opsi jawaban (PG dan MCMA)
+            // Acak opsi jawaban (PG & MCMA)
             bankSoal.forEach(soal => {
                 if (soal.opsi && (soal.jenis === 'pg' || soal.jenis === 'mcma')) {
                     acakArray(soal.opsi);
@@ -257,7 +267,6 @@
                 htmlKonten += `<div>${htmlOpsi}</div>`;
 
             } else {
-                // Uraian & HOTS
                 const teksJawaban = jawabanSiswa[soal.id] || '';
                 htmlKonten += `
                     <textarea oninput="simpanUraian(${soal.id}, this.value)" rows="5" placeholder="Ketikkan jawaban uraian Anda di sini..." style="width:100%; padding:12px; border:1px solid #d1d5db; border-radius:10px; font-size:15px;">${teksJawaban}</textarea>
@@ -349,7 +358,6 @@
                 }
             });
 
-            // Penghitungan persentase nilai akhir berdasarkan max_score (142)
             let skorAkhir = Math.round((totalSkorDiperoleh / totalSkorMaksimal) * 100);
 
             const form = document.getElementById('form-kirim-sheets');
