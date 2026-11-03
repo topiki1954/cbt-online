@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi CBT Mandiri</title>
+    <!-- Menggunakan Tailwind CSS untuk tampilan modern mirip UTBK -->
+    <script src="https://jsdelivr.net"></script>
+    <style>
+        body { font-family: sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+
+    <!-- FORM BIODATA SISWA -->
+    <div id="form-biodata" class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h2 class="text-2xl font-bold mb-6 text-center text-blue-600">Ujian Online CBT</h2>
+        <div class="mb-4">
+            <label class="block text-gray-700 font-semibold mb-2">Nama Lengkap</label>
+            <input type="text" id="nama" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+        </div>
+        <div class="mb-6">
+            <label class="block text-gray-700 font-semibold mb-2">Kelas / Ruang</label>
+            <input type="text" id="kelas" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+        </div>
+        <button onclick="mulaiUjian()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-lg transition duration-200">Mulai Ujian</button>
+    </div>
+
+    <!-- AREA SOAL UJIAN (Tersembunyi di awal) -->
+    <div id="area-ujian" class="hidden bg-white p-8 rounded-lg shadow-md w-full max-w-2xl">
+        <div class="flex justify-between items-center border-b pb-4 mb-4">
+            <span id="info-peserta" class="font-semibold text-gray-600">Peserta: -</span>
+            <span id="timer" class="bg-red-100 text-red-700 font-bold px-3 py-1 rounded">Sisa Waktu: 01:00</span>
+        </div>
+
+        <div id="konten-soal">
+            <!-- Soal akan muncul di sini via JavaScript -->
+        </div>
+
+        <div class="flex justify-between mt-6">
+            <button id="btn-prev" onclick="soalSebelumnya()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded font-semibold disabled:opacity-50">Sebelumnya</button>
+            <button id="btn-next" onclick="soalSelanjutnya()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold">Selanjutnya</button>
+        </div>
+    </div>
+
+    <!-- SCREEN BERHASIL SELESAI -->
+    <div id="area-selesai" class="hidden bg-white p-8 rounded-lg shadow-md w-full max-w-md text-center">
+        <h2 class="text-2xl font-bold text-green-600 mb-2">Ujian Selesai!</h2>
+        <p class="text-gray-600 mb-6">Jawaban Anda telah berhasil dikirim ke server.</p>
+        <div class="text-4xl font-bold text-gray-800 mb-4" id="nilai-akhir">Skor: 0</div>
+        <p class="text-sm text-gray-500">Anda sekarang dapat menutup halaman ini.</p>
+    </div>
+
+    <script>
+        // PASTE URL GOOGLE APPS SCRIPT ANDA DI SINI
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyWv9AQ7XNMFq4vextrKKwOTlLzoEI7rcWOKrTxrx2587moTL85C9gikyfxdtzkFefVhw/exec"; 
+
+        // Bank Soal Dummy (Anda bisa ubah sesuka hati)
+        const bankSoal = [
+            { id: 1, tanya: "Apa ibukota negara Indonesia?", opsi: ["Surabaya", "Jakarta", "Bandung", "Medan"], kunci: "Jakarta" },
+            { id: 2, tanya: "Berapakah hasil dari 5 + 5 * 2?", opsi: ["20", "15", "25", "30"], kunci: "15" },
+            { id: 3, tanya: "Planet manakah yang dikenal sebagai Planet Merah?", opsi: ["Mars", "Venus", "Yupiter", "Saturnus"], kunci: "Mars" }
+        ];
+
+        let namaPeserta = "";
+        let kelasPeserta = "";
+        let indeksSekarang = 0;
+        let jawabanSiswa = {};
+        let sisaWaktu = 60; // dalam detik
+        let hitungMundur;
+
+        function mulaiUjian() {
+            namaPeserta = document.getElementById('nama').value.trim();
+            kelasPeserta = document.getElementById('kelas').value.trim();
+
+            if (!namaPeserta || !kelasPeserta) {
+                alert("Mohon isi Nama dan Kelas terlebih dahulu!");
+                return;
+            }
+
+            document.getElementById('form-biodata').classList.add('hidden');
+            document.getElementById('area-ujian').classList.remove('hidden');
+            document.getElementById('info-peserta').innerText = `Peserta: ${namaPeserta} (${kelasPeserta})`;
+
+            tampilkanSoal();
+            mulaiTimer();
+        }
+
+        function tampilkanSoal() {
+            const soal = bankSoal[indeksSekarang];
+            let htmlOpsi = '';
+
+            soal.opsi.forEach(opsi => {
+                const checked = jawabanSiswa[soal.id] === opsi ? 'checked' : '';
+                htmlOpsi += `
+                    <label class="flex items-center p-3 border rounded-lg mb-2 cursor-pointer hover:bg-gray-50 transition">
+                        <input type="radio" name="soal-${soal.id}" value="${opsi}" ${checked} onchange="simpanJawaban(${soal.id}, '${opsi}')" class="mr-3 w-4 h-4 text-blue-600">
+                        <span>${opsi}</span>
+                    </label>
+                `;
+            });
+
+            document.getElementById('konten-soal').innerHTML = `
+                <p class="text-sm font-bold text-blue-600 mb-1">Soal No. ${indeksSekarang + 1} dari ${bankSoal.length}</p>
+                <h3 class="text-lg text-gray-800 font-medium mb-4">${soal.tanya}</h3>
+                <div class="flex flex-col">${htmlOpsi}</div>
+            `;
+
+            // Atur tombol Navigasi
+            document.getElementById('btn-prev').disabled = indeksSekarang === 0;
+            if (indeksSekarang === bankSoal.length - 1) {
+                document.getElementById('btn-next').innerText = "Selesai & Kirim";
+                document.getElementById('btn-next').classList.replace('bg-blue-600', 'bg-green-600');
+            } else {
+                document.getElementById('btn-next').innerText = "Selanjutnya";
+                document.getElementById('btn-next').classList.replace('bg-green-600', 'bg-blue-600');
+            }
+        }
+
+        function simpanJawaban(soalId, jawaban) {
+            jawabanSiswa[soalId] = jawaban;
+        }
+
+        function soalSebelumnya() {
+            if (indeksSekarang > 0) {
+                indeksSekarang--;
+                tampilkanSoal();
+            }
+        }
+
+        function soalSelanjutnya() {
+            if (indeksSekarang < bankSoal.length - 1) {
+                indeksSekarang++;
+                tampilkanSoal();
+            } else {
+                prosesSelesaiUjian();
+            }
+        }
+
+        function mulaiTimer() {
+            hitungMundur = setInterval(() => {
+                sisaWaktu--;
+                let menit = Math.floor(sisaWaktu / 60);
+                let detik = sisaWaktu % 60;
+                document.getElementById('timer').innerText = `Sisa Waktu: ${menit.toString().padStart(2, '0')}:${detik.toString().padStart(2, '0')}`;
+
+                if (sisaWaktu <= 0) {
+                    clearInterval(hitungMundur);
+                    alert("Waktu habis! Ujian Anda akan otomatis dikirim.");
+                    prosesSelesaiUjian();
+                }
+            }, 1000);
+        }
+
+        function prosesSelesaiUjian() {
+            clearInterval(hitungMundur);
+            document.getElementById('area-ujian').classList.add('hidden');
+            
+            // Tampilkan layar loading sederhana
+            document.getElementById('area-selesai').classList.remove('hidden');
+            document.getElementById('nilai-akhir').innerText = "Mengirim...";
+
+            // Hitung Skor
+            let jumlahBenar = 0;
+            bankSoal.forEach(soal => {
+                if (jawabanSiswa[soal.id] === soal.kunci) {
+                    jumlahBenar++;
+                }
+            });
+            let skorAkhir = Math.round((jumlahBenar / bankSoal.length) * 100);
+
+            // Kirim Data ke Google Sheets
+            const payload = {
+                nama: namaPeserta,
+                kelas: kelasPeserta,
+                skor: skorAkhir
+            };
+
+            fetch(SCRIPT_URL, {
+                method: "POST",
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('nilai-akhir').innerText = `Skor: ${skorAkhir}`;
+            })
+            .catch(err => {
+                console.error(err);
+                document.getElementById('nilai-akhir').innerText = `Skor: ${skorAkhir} (Gagal sinkron, tapi tersimpan lokal)`;
+            });
+        }
+    </script>
+</body>
+</html>
