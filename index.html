@@ -66,11 +66,11 @@
 
     <!-- Form tersembunyi untuk tembus CORS via iframe (Mengirim Nama, Kelas, Skor, Pokok Bahasan) -->
     <form id="form-kirim-sheets" action="" method="POST" target="iframe-hidden" class="hidden">
-        <input type="text" name="nama" id="input-kirim-nama">
-        <input type="text" name="kelas" id="input-kirim-kelas">
-        <input type="text" name="skor" id="input-kirim-skor">
-        <input type="text" name="pokok_bahasan" id="input-kirim-pokok-bahasan">
-    </form>
+    <input type="text" name="nama" id="input-kirim-nama">
+    <input type="text" name="kelas" id="input-kirim-kelas">
+    <input type="text" name="pokok_bahasan" id="input-kirim-pokok-bahasan">
+    <input type="text" name="jawaban" id="input-kirim-jawaban"> 
+</form>
     <iframe name="iframe-hidden" id="iframe-hidden" class="hidden"></iframe>
 
     <!-- 1. HALAMAN MUKA / LOGIN UJIAN -->
@@ -128,7 +128,7 @@
 
         // DAFTAR PILIHAN NAMA FILE JSON (Bisa ubah-ubah nama JSON di GitHub pakai salah satu nama ini)
         const KEMUNGKINAN_FILE_JSON = [
-            'bank-soal-ikatan-kimia.json',
+            'soal-ujian-kimia.json',
             'banksoal.json',
             'bank_soal.json'
         ];
@@ -351,46 +351,31 @@
 
         // 8. PROSES AKHIR UJIAN (PENGHITUNGAN & PENGIRIMAN DATA)
         function prosesSelesaiUjian() {
-            ujianAktif = false; // Matikan detektor anti-curang
-            clearInterval(hitungMundur);
-            
-            document.getElementById('area-ujian').classList.add('hidden');
-            document.getElementById('area-selesai').classList.remove('hidden');
-            document.getElementById('nilai-akhir').innerText = "Mengirim...";
+    ujianAktif = false; 
+    clearInterval(hitungMundur);
+    
+    document.getElementById('area-ujian').classList.add('hidden');
+    document.getElementById('area-selesai').classList.remove('hidden');
+    document.getElementById('nilai-akhir').innerText = "Sedang dikirim...";
 
-            let totalSkorDiperoleh = 0;
+    // 1. Ambil data
+    const form = document.getElementById('form-kirim-sheets');
+    form.action = SCRIPT_URL;
+    document.getElementById('input-kirim-nama').value = namaPeserta;
+    document.getElementById('input-kirim-kelas').value = kelasPeserta;
+    document.getElementById('input-kirim-pokok-bahasan').value = document.getElementById('judul-ujian').innerText;
+    
+    // 2. Ubah jawaban siswa menjadi format teks agar bisa dikirim ke server
+    document.getElementById('input-kirim-jawaban').value = JSON.stringify(jawabanSiswa);
 
-            bankSoal.forEach(soal => {
-                if (soal.jenis === 'pg') {
-                    if (jawabanSiswa[soal.id] === soal.kunci) totalSkorDiperoleh += soal.bobot;
-                } else if (soal.jenis === 'mcma') {
-                    const jawSiswa = jawabanSiswa[soal.id] || [];
-                    const jawKunci = soal.kunci || [];
-                    const cocok = jawSiswa.length === jawKunci.length && jawSiswa.every(v => jawKunci.includes(v));
-                    if (cocok) totalSkorDiperoleh += soal.bobot;
-                }
-            });
+    // 3. Kirim ke Google Sheets
+    form.submit();
 
-            // Konversi nilai menjadi persentase 0-100
-            let skorAkhir = Math.round((totalSkorDiperoleh / totalSkorMaksimal) * 100);
-
-            // Mengisi data ke form rahasia untuk Google Sheets
-            const form = document.getElementById('form-kirim-sheets');
-            form.action = SCRIPT_URL;
-            document.getElementById('input-kirim-nama').value = namaPeserta;
-            document.getElementById('input-kirim-kelas').value = kelasPeserta;
-            document.getElementById('input-kirim-skor').value = skorAkhir;
-            document.getElementById('input-kirim-pokok-bahasan').value = document.getElementById('judul-ujian').innerText;
-
-            // Submit diam-diam ke iframe
-            form.submit();
-
-            // Tampilkan hasil di layar
-            setTimeout(() => {
-                document.getElementById('nilai-akhir').innerText = "Skor: " + skorAkhir;
-            }, 1500);
-        }
-
+    // 4. Ubah tampilan akhir (karena skor dirahasiakan)
+    setTimeout(() => {
+        document.getElementById('nilai-akhir').innerHTML = "Jawaban Terkirim!<br><span style='font-size:16px; font-weight:normal; color:#6b7280'>Skor akan diumumkan oleh guru.</span>";
+    }, 1500);
+}
         // 9. DETEKSI ANTI-KECURANGAN (PINDAH TAB/APLIKASI)
         document.addEventListener("visibilitychange", () => {
             if (document.visibilityState === 'hidden' && ujianAktif) {
